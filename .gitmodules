@@ -1,0 +1,4 @@
+[submodule "webui"]
+	path = webui
+	url = https://github.com/webui-dev/webui.git
+	branch = 2.4.2
