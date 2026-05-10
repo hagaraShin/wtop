@@ -1,9 +1,8 @@
-#include <stdio.h>
 #include <webui.hpp>
 
 #include "main.hpp"
-
-void button_click(webui::window::event *e) { printf("Button clicked!\n"); }
+#include "logger.hpp"
+#include "meters.hpp"
 
 int main() {
   webui::window window{};
@@ -17,15 +16,11 @@ int main() {
 }
 
 void indexPage(webui::window &window) {
-  window.bind("my_button", button_click);
+  Logger::log(DEBUG, Meters::getAllJson());
 
-  window.show("<html>"
-              "<head>"
-              "<script src=\"webui.js\"></script>"
-              "</head>"
-              "<body>"
-              "<h1>Hello from C++</h1>"
-              "</body>"
-              "</html>");
+  window.set_root_folder("./dist");
+  window.bind("get_update", Meters::getAllJsonBindable);
+
+  window.show("index.html");
 
 }

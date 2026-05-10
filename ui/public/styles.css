@@ -1,0 +1,6 @@
+main,
+section,
+article {
+  display: flex;
+  flex-direction: column;
+}
