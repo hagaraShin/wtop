@@ -1,5 +1,6 @@
 bin
 node_modules
+ui/node_modules
 dist
 CMakeLists.txt.user
 CMakeCache.txt
