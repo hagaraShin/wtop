@@ -98,7 +98,7 @@ export class CpuFreqMeter {
   /**
     * @param freqs Новые частоты. Должен быть массивом с частотами каждого ядра в текущий момент. При несовпадении количества ядер с внутренним состоянием произойдёт сброс графика.
     */
-  pushCpuFreq(freqs: number[]) {
+  pushCpuFreq(freqs: number[], now: Date) {
 
     let chart = this.chart;
     // Сбрасываем график при изменении количества ядер
@@ -112,7 +112,7 @@ export class CpuFreqMeter {
       chart.data.datasets[freqs.length].data.push(sum / freqs.length)
     }
 
-    this.time_labels.push((new Date()).getTime())
+    this.time_labels.push(now.getTime())
 
     let sum = 0;
     for (let i = 0; i < freqs.length; i++) {
