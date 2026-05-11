@@ -1,4 +1,3 @@
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <webui.hpp>
@@ -13,7 +12,6 @@ int main(int argc, char **argv) {
   int last = k.find_last_of('/');
   std::ostringstream os;
   os << k.substr(0, last) << "/dist";
-  std::cout <<os.str();
   indexPage(window, os.str());
   webui::wait();
   webui::delete_all_profiles();

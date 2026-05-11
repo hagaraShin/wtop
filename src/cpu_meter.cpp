@@ -11,8 +11,36 @@ CpuMeter::CpuMeter() {
   getFreqFiles();
 }
 
+auto mhz = "cpu MHz";
+
 vector<double> CpuMeter::getFreqs() {
   vector<double> freqs;
+  if (core_freq.empty()) {
+    std::ifstream proc{"/proc/cpuinfo"};
+    std::string line;
+    while (std::getline(proc, line)) {
+      if (line.compare(0, 7, mhz) == 0) {
+        std::cout << line << std::endl;
+        int start = 0;
+        int end = 0;
+        for (char ch : line) {
+          if (ch >= '0' && ch <= '9')
+            break;
+          start++;
+        }
+        line = line.erase(0, start);
+        for (char ch : line) {
+          if ((ch < '0' || ch > '9') && ch != '.')
+            break;
+          end++;
+        }
+        line = line.erase(end);
+        std::cout << line << std::endl;
+        freqs.push_back(stod(line));
+      }
+    }
+    return freqs;
+  }
   for (auto file : core_freq) {
     double freq = std::stod(readfile(file, "0.0")) / 1000;
     freqs.push_back(freq);
@@ -39,7 +67,8 @@ string readfile(const std::filesystem::path &path, const string &fallback) {
   string out;
   try {
     std::ifstream file(path);
-    for (string readstr; getline(file, readstr); out += readstr) ;
+    for (string readstr; getline(file, readstr); out += readstr)
+      ;
   } catch (const std::exception &e) {
     Logger::log(LogLevel::ERROR, e.what());
     return fallback;
