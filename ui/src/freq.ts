@@ -45,11 +45,11 @@ export class CpuFreqMeter {
 
     for (let i = 0; i < this.freqs.length; i++) {
       if (this.tick == this.scale) {
-        chart.data.datasets[i].data.push(this.freqs[i].slice(-this.scale, -1).reduce((a, b) => a + b) / this.scale)
+        chart.data.datasets[i].data.push(this.freqs[i].slice(-this.scale - 1, -1).reduce((a, b) => a + b) / this.scale)
       }
     }
 
-    chart.data.datasets[this.freqs.length].data.push(this.freq_avgs.slice(-this.scale, -1).reduce((a, b) => a + b) / this.scale)
+    chart.data.datasets[this.freqs.length].data.push(this.freq_avgs.slice(-this.scale - 1, -1).reduce((a, b) => a + b) / this.scale)
     chart.update()
     this.tick = 0
     const now = (new Date()).getTime()
