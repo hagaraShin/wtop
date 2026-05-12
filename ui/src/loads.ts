@@ -1,7 +1,9 @@
 import Chart, { ChartTypeRegistry } from "chart.js/auto"
 import { colors } from "./utils"
 
-export class CpuFreqMeter {
+export class CpuLoadMeter {
+  time_labels: number[] = []
+
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
   chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
@@ -11,19 +13,20 @@ export class CpuFreqMeter {
     },
     options: {
       indexAxis: 'y',
-      maintainAspectRatio: false,
-      backgroundColor: colors[1],
       plugins: {
         legend: {
           display: false
         }
       },
+      maintainAspectRatio: false,
+      backgroundColor: colors[0],
       interaction: {
         intersect: false,
         axis: 'y'
       }
     }
   })
+
   /**
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
@@ -36,7 +39,7 @@ export class CpuFreqMeter {
     */
   reset(cores: number) {
     // Добавляем новые массивы в график
-    this.chart.data.datasets = [{ label: "Частота", data: [] }]
+    this.chart.data.datasets = [{ label: "Загрузка", data: []}]
 
     this.chart.data.labels = []
     // Создаём датасеты
@@ -46,33 +49,29 @@ export class CpuFreqMeter {
     }
 
     // И датасет для среднего
-    this.chart.data.labels.push(`Средняя`)
+    this.chart.data.labels.push(`Общая`)
     this.chart.data.datasets[0].data.push(0)
     console.log(this.chart.data.datasets)
   }
 
   /**
-    * @param freqs Новые частоты. Должен быть массивом с частотами каждого ядра в текущий момент. При несовпадении количества ядер с внутренним состоянием произойдёт сброс графика.
+    * @param loads Новая загрузка. Должен быть массивом с частотами каждого ядра в момент now. При несовпадении количества ядер с внутренним состоянием произойдёт сброс графика.
     */
-  pushCpuFreq(freqs: number[], now: Date) {
+  pushCpuLoads(loads: number[], now: Date) {
 
     let chart = this.chart;
     // Сбрасываем график при изменении количества ядер
-    if (chart.data.datasets.length == 0 || chart.data.datasets[0].data.length != freqs.length + 1) {
-      this.reset(freqs.length)
+    if (chart.data.datasets.length == 0  || chart.data.datasets[0].data.length != loads.length) {
+      this.reset(loads.length - 1)
     }
 
-    let sum = 0
-    for (let i = 0; i < freqs.length; i++) {
-      sum += freqs[i]
-      chart.data.datasets[0].data[i] = freqs[i]
+    for (let i = 1; i < loads.length; i++) {
+      chart.data.datasets[0].data[i - 1] = loads[i]
     }
 
+      console.log(chart.data.datasets[0].data)
 
-    console.log(chart.data.datasets[0].data)
-    console.log(chart.data.datasets[0].data.length - 1)
-
-    chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] = sum / freqs.length
+    chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] = loads[0]
     chart.update()
   }
 }

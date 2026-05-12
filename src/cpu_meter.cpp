@@ -4,7 +4,11 @@
 #include "logger.hpp"
 #include <exception>
 #include <fstream>
+#include <iterator>
+#include <numeric>
+#include <sstream>
 #include <string>
+#include <string_view>
 
 CpuMeter::CpuMeter() {
   getCoreCount();
@@ -12,6 +16,70 @@ CpuMeter::CpuMeter() {
 }
 
 auto mhz = "cpu MHz";
+
+vector<double> CpuMeter::getLoads() {
+  static vector<uint64_t> last_totals;
+  vector<uint64_t> totals;
+  static vector<uint64_t> last_idles;
+  vector<uint64_t> idles;
+  vector<double> loads;
+  std::ifstream proc;
+  proc.open("/proc/stat");
+  string line;
+
+  while (std::getline(proc, line) && line.compare(0, 3, "cpu") == 0) {
+    vector<uint64_t> vals;
+    std::stringstream ss(line);
+
+    std::string cpu;
+    ss >> cpu;
+
+    uint64_t v = 0, total = 0, idle = 0;
+    while (ss >> v) {
+      total += v;
+      vals.push_back(v);
+    }
+    if (vals.size() > 8) {
+      for (int i = 8; i < vals.size(); i++) {
+        total -= vals[i];
+      }
+    }
+
+    if (vals.size() > 4)
+      idle = vals[3] + vals[4];
+
+    totals.push_back(total);
+    idles.push_back(idle);
+  }
+
+  if (last_totals.size() == 0) {
+    for (int i = 0; i < core_count; i++) {
+      loads.push_back(0);
+    }
+    for (auto total : totals) {
+      last_totals.push_back(total);
+    }
+    for (auto idle : idles) {
+      last_idles.push_back(idle);
+    }
+    return loads;
+  }
+  for (int i = 0; i < totals.size(); i++) {
+    double calc_totals = totals[i] - last_totals[i];
+    double calc_idles = idles[i] - last_idles[i];
+    loads.push_back((calc_totals - calc_idles) * 100 / calc_totals);
+  }
+
+  last_totals.resize(0);
+  for (auto total : totals) {
+    last_totals.push_back(total);
+  }
+  last_idles.resize(0);
+  for (auto idle : idles) {
+    last_idles.push_back(idle);
+  }
+  return loads;
+}
 
 vector<double> CpuMeter::getFreqs() {
   vector<double> freqs;

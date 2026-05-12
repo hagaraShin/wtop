@@ -16,6 +16,7 @@ public:
   Получает частоты ядер в MHz
   */
   vector<double> getFreqs();
+  vector<double> getLoads();
 private:
   int core_count = 1;
   vector<fs::path> core_freq;

@@ -1,5 +1,7 @@
 import Chart, { CartesianScaleOptions, ChartDataset, ChartTypeRegistry } from "chart.js/auto";
 
+export const colors = ["#fe8019", "#83a598", "#8ec07c", "#d3869b"]
+
 /**
   *Глубокая копия типа с опциональностью всех полей и всех их подполей
   */
@@ -37,61 +39,16 @@ export function formatTime(tickValue: string | number) {
 }
 
 
-/**
-  * Функция, чтобы созать новый график с типом линия.
-  * TODO: Разобраться, почему LSP ругается на yScale. Не похоже, чтобы проблема была.
-  */
-export function createChart<T>(canvas: HTMLCanvasElement, labels: number[],
-  datasets: ChartDataset<"line", T>[],
-  yScale: DeepPartial<CartesianScaleOptions>): Chart<keyof ChartTypeRegistry, T> {
-  const now = (new Date()).getTime()
-  const chart = new Chart(
-    canvas,
-    {
-      type: 'line',
-      data: {
-        labels,
-        datasets
-      },
-      options: {
-        responsive: true,
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        plugins: {
-          legend: {
-            position: 'bottom'
-          },
-          tooltip: {
-            callbacks: {
-              title(items) {
-                return formatTime(items[0].parsed.x!)
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            type: "linear",
-            max: now,
-            min: now - 60000,
-            ticks: {
-              stepSize: 1000,
-              callback: formatTime
-            }
-          },
-          y: yScale as any,
-        }
-      }
-    }
-  );
-  return chart
-}
-
 type Update = {
   cpu: {
     freqs: number[]
+    loads: number[]
+  },
+  mem: {
+    ram_total: number,
+    ram_avail: number,
+    swap_total: number,
+    swap_free: number,
   }
 }
 

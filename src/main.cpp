@@ -5,6 +5,7 @@
 #include "main.hpp"
 #include "logger.hpp"
 #include "meters.hpp"
+#include "ram_meter.hpp"
 
 int main(int argc, char **argv) {
   webui::window window{};
@@ -21,8 +22,8 @@ int main(int argc, char **argv) {
 }
 
 void indexPage(webui::window &window, string root) {
-  Logger::log(DEBUG, Meters::getAllJson());
 
+  auto meter = RamMeter::getInfo();
   window.set_root_folder(root);
   window.bind("get_update", Meters::getAllJsonBindable);
 
