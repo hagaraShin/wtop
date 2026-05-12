@@ -1,7 +1,6 @@
 #include <sstream>
 #include <string>
 #include <webui.hpp>
-
 #include "main.hpp"
 #include "logger.hpp"
 #include "meters.hpp"
