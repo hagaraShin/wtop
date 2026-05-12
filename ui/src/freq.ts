@@ -1,7 +1,8 @@
 import Chart, { ChartTypeRegistry } from "chart.js/auto"
-import { colors } from "./utils"
+import { attachGraph, colors } from "./utils"
+import { Meter } from "./meters"
 
-export class CpuFreqMeter {
+export class CpuFreqMeter implements Meter{
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
   chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
@@ -28,7 +29,7 @@ export class CpuFreqMeter {
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
   public attach(container: HTMLElement) {
-    container.replaceChildren(this.canvas)
+    attachGraph(container, this.canvas, "cpu", "freq", "Частота")
   }
 
   /**
@@ -48,13 +49,12 @@ export class CpuFreqMeter {
     // И датасет для среднего
     this.chart.data.labels.push(`Средняя`)
     this.chart.data.datasets[0].data.push(0)
-    console.log(this.chart.data.datasets)
   }
 
   /**
     * @param freqs Новые частоты. Должен быть массивом с частотами каждого ядра в текущий момент. При несовпадении количества ядер с внутренним состоянием произойдёт сброс графика.
     */
-  pushCpuFreq(freqs: number[], now: Date) {
+  pushCpuFreq(freqs: number[]) {
 
     let chart = this.chart;
     // Сбрасываем график при изменении количества ядер
@@ -69,8 +69,6 @@ export class CpuFreqMeter {
     }
 
 
-    console.log(chart.data.datasets[0].data)
-    console.log(chart.data.datasets[0].data.length - 1)
 
     chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] = sum / freqs.length
     chart.update()

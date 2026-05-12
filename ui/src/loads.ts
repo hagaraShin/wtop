@@ -1,7 +1,8 @@
 import Chart, { ChartTypeRegistry } from "chart.js/auto"
-import { colors } from "./utils"
+import { attachGraph, colors } from "./utils"
+import { Meter } from "./meters"
 
-export class CpuLoadMeter {
+export class CpuLoadMeter implements Meter {
   time_labels: number[] = []
 
   canvas: HTMLCanvasElement = document.createElement("canvas")
@@ -31,7 +32,7 @@ export class CpuLoadMeter {
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
   public attach(container: HTMLElement) {
-    container.replaceChildren(this.canvas)
+    attachGraph(container, this.canvas, "cpu", "loads", "Загрузка")
   }
 
   /**
@@ -51,13 +52,12 @@ export class CpuLoadMeter {
     // И датасет для среднего
     this.chart.data.labels.push(`Общая`)
     this.chart.data.datasets[0].data.push(0)
-    console.log(this.chart.data.datasets)
   }
 
   /**
     * @param loads Новая загрузка. Должен быть массивом с частотами каждого ядра в момент now. При несовпадении количества ядер с внутренним состоянием произойдёт сброс графика.
     */
-  pushCpuLoads(loads: number[], now: Date) {
+  pushCpuLoads(loads: number[]) {
 
     let chart = this.chart;
     // Сбрасываем график при изменении количества ядер
@@ -69,7 +69,6 @@ export class CpuLoadMeter {
       chart.data.datasets[0].data[i - 1] = loads[i]
     }
 
-      console.log(chart.data.datasets[0].data)
 
     chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] = loads[0]
     chart.update()

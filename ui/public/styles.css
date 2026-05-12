@@ -4,21 +4,73 @@
   color: #fbf1c7;
 }
 
-body {
-  display: flex;
-  direction: column;
-}
 
 main {
-  flex-grow: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  height: 100%;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+section:hover {
+  border-color: #d3869b;
+}
+
+div {
+  flex-grow: 1;
+  min-height: 0;
+}
+
+.category {
+  margin: 0 10px;
+  padding: 5px;
+  border-radius: 10px;
+  color: #1d2021;
 }
 
 .category.cpu {
-  color: #83a598
+  background-color: #83a598;
+}
+
+.category.rom {
+  background-color: #8ec07c
 }
 
 .category.mem {
-  color: #fb4934
+  background-color: #fb4934
+}
+
+.category.net {
+  background-color: #b8bb26
+}
+
+.hidden {
+  display: none;
+}
+
+nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+nav>span {
+  margin: 20px;
 }

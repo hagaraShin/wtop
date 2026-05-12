@@ -2,13 +2,13 @@ import Chart, { ChartTypeRegistry } from "chart.js/auto"
 import { attachGraph, colors } from "./utils"
 import { Meter } from "./meters"
 
-export class RamMeter implements Meter {
+export class SwapMeter implements Meter {
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
   chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
     type: "doughnut",
     data: {
-      labels: ["Занято", "Доступно"],
+      labels: ["Занято", "Свободно"],
       datasets: [{ label: "KB", data: [0,0], backgroundColor: [colors[0], colors[1]] }]
     },
     options: {
@@ -19,14 +19,14 @@ export class RamMeter implements Meter {
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
   public attach(container: HTMLElement) {
-    attachGraph(container, this.canvas, "mem", "ram", "Оперативная Память")
+    attachGraph(container, this.canvas, "mem", "swap", "Swap")
   }
 
 
   /**
     * @param freqs Новые частоты. Должен быть массивом с частотами каждого ядра в текущий момент. При несовпадении количества ядер с внутренним состоянием произойдёт сброс графика.
     */
-  pushRam(total: number, avail: number) {
+  pushSwap(total: number, avail: number) {
 
     let chart = this.chart;
 

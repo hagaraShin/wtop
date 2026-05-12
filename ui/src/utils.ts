@@ -49,10 +49,38 @@ type Update = {
     ram_avail: number,
     swap_total: number,
     swap_free: number,
-  }
+  },
+  disks: Disk[],
+  net: NetSpeed[],
+}
+
+export type Disk = {
+  path: string,
+  total: number,
+  free: number,
+  avail: number,
+}
+
+export type NetSpeed = {
+  interface: string,
+  upload: number,
+  download: number,
 }
 
 export async function parsedUpdates(): Promise<Update>{
   const str = await get_update()
   return JSON.parse(str)
+}
+
+export function attachGraph(container: HTMLElement,canvas: HTMLElement, category: string, id: string, name: string){
+    const h2 = document.createElement('h2')
+    const span =  document.createElement('span')
+    span.className = `category ${category}`
+    span.appendChild(document.createTextNode(category.toLocaleUpperCase()))
+    h2.appendChild(span)
+    h2.appendChild(document.createTextNode(name))
+    const div = document.createElement("div")
+    div.id = id
+    div.appendChild(canvas)
+    container.replaceChildren(h2, div)
 }
