@@ -1,19 +1,14 @@
-#include <sstream>
-#include <string>
 #include <webui.hpp>
 #include "main.hpp"
 #include "logger.hpp"
 #include "meters.hpp"
-#include "ram_meter.hpp"
-#include "disks_meter.hpp"
 
 int main(int argc, char **argv) {
   webui::window window{};
-  std::string k = argv[0];
-  int last = k.find_last_of('/');
-  std::ostringstream os;
-  os << k.substr(0, last) << "/dist";
-  indexPage(window, os.str());
+  std::filesystem::path prefix =
+    std::filesystem::canonical("/proc/self/exe").parent_path().parent_path();  
+
+  indexPage(window, prefix/"share"/"wtop"/"dist");
   webui::wait();
   webui::delete_all_profiles();
   webui::clean();
@@ -21,9 +16,10 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void indexPage(webui::window &window, string root) {
+void indexPage(webui::window &window, std::filesystem::path root) {
 
-  window.set_root_folder(root);
+  Logger::log(INFO, "Запускаемся из папки: " + (root/"index.html").string());
+  window.set_root_folder((root).string());
   window.bind("get_update", Meters::getAllJsonBindable);
 
   window.show("index.html");

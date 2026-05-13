@@ -1,17 +1,25 @@
 #include "net_meter.hpp"
+#include <unordered_set>
+#include <fstream>
 
 std::vector<Speeds> NetMeter::getSpeed() {
 
+  std::unordered_set<std::string> set;
   std::vector<Speeds> speeds;
   ifaddrs *addrs;
 
   getifaddrs(&addrs);
   ifaddrs *cur = addrs;
   while (cur != NULL) {
+    if (set.find(cur->ifa_name) != set.end()) {
+      cur = cur->ifa_next;
+      continue;
+    };
     Speeds speed;
     speed.interface = cur->ifa_name;
-    cur = cur->ifa_next;
     speeds.push_back(speed);
+    set.insert(speed.interface);
+    cur = cur->ifa_next;
   }
   freeifaddrs(addrs);
   auto now = time(NULL);

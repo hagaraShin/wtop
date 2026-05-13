@@ -1,6 +1,5 @@
-#include "logger.hpp"
+#pragma once
 #include <ctime>
-#include <fstream>
 #include <ifaddrs.h>
 #include <map>
 #include <string>

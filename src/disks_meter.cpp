@@ -3,6 +3,7 @@
 #include <string>
 #include <sys/statvfs.h>
 #include <limits>
+#include <fstream>
 
 #define max_stream std::numeric_limits<std::streamsize>::max()
 

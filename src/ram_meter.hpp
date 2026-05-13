@@ -1,5 +1,5 @@
+#pragma once
 #include <fstream>
-#include <limits>
 
 using std::ifstream;
 using std::string;

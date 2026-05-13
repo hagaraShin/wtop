@@ -1,4 +1,5 @@
 #include "ram_meter.hpp"
+#include <limits>
 
 MemInfo RamMeter::getInfo() {
     MemInfo info = {0};

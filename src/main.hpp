@@ -1,4 +1,4 @@
-#include <string>
+#include <filesystem>
 #include <webui.hpp>
-void indexPage(webui::window &window, std::string root);
+void indexPage(webui::window &window, std::filesystem::path root);
 

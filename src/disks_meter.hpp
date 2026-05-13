@@ -1,5 +1,5 @@
+#pragma once
 #include "logger.hpp"
-#include <fstream>
 #include <vector>
 typedef struct {
   string mount;
