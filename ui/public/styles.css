@@ -74,3 +74,11 @@ nav {
 nav>span {
   margin: 20px;
 }
+
+@media(max-width: 500px) {
+
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+  }
+}

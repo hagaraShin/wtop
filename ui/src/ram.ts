@@ -5,21 +5,28 @@ import { Meter } from "./meters"
 export class RamMeter implements Meter {
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
-  chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Занято", "Доступно"],
-      datasets: [{ label: "KB", data: [0,0], backgroundColor: [colors[0], colors[1]] }]
-    },
-    options: {
-      maintainAspectRatio: false
-    }
-  })
+  chart: Chart<keyof ChartTypeRegistry, number[]> = this.defaultChart()
   /**
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
   public attach(container: HTMLElement) {
+    this.canvas.remove()
+    this.canvas = document.createElement('canvas')
+    this.chart = this.defaultChart()
     attachGraph(container, this.canvas, "mem", "ram", "Оперативная Память")
+  }
+
+  defaultChart() {
+    return new Chart(this.canvas, {
+      type: "doughnut",
+      data: {
+        labels: ["Занято", "Доступно"],
+        datasets: [{ label: "KB", data: [0, 0], backgroundColor: [colors[0], colors[1]] }]
+      },
+      options: {
+        maintainAspectRatio: false
+      }
+    })
   }
 
 

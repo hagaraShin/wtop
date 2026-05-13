@@ -2,34 +2,41 @@ import Chart, { ChartTypeRegistry } from "chart.js/auto"
 import { attachGraph, colors } from "./utils"
 import { Meter } from "./meters"
 
-export class CpuFreqMeter implements Meter{
+export class CpuFreqMeter implements Meter {
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
-  chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
-    type: "bar",
-    data: {
-      datasets: []
-    },
-    options: {
-      indexAxis: 'y',
-      maintainAspectRatio: false,
-      backgroundColor: colors[1],
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-      interaction: {
-        intersect: false,
-        axis: 'y'
-      }
-    }
-  })
+  chart: Chart<keyof ChartTypeRegistry, number[]> = this.defaultChart()
   /**
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
   public attach(container: HTMLElement) {
+    this.canvas.remove()
+    this.canvas = document.createElement('canvas')
+    this.chart = this.defaultChart()
     attachGraph(container, this.canvas, "cpu", "freq", "Частота")
+  }
+
+  defaultChart(): Chart<keyof ChartTypeRegistry, number[]> {
+    return new Chart(this.canvas, {
+      type: "bar",
+      data: {
+        datasets: []
+      },
+      options: {
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        backgroundColor: colors[1],
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        interaction: {
+          intersect: false,
+          axis: 'y'
+        }
+      }
+    });
   }
 
   /**

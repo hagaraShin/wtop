@@ -7,7 +7,20 @@ export class CpuLoadMeter implements Meter {
 
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
-  chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
+  chart: Chart<keyof ChartTypeRegistry, number[]> = this.defaultChart()
+
+  /**
+    * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
+    */
+  public attach(container: HTMLElement) {
+    this.canvas.remove()
+    this.canvas = document.createElement('canvas')
+    this.chart = this.defaultChart()
+    attachGraph(container, this.canvas, "cpu", "loads", "Загрузка")
+  }
+
+  defaultChart(): Chart<keyof ChartTypeRegistry, number[]> {
+    return new Chart(this.canvas, {
     type: "bar",
     data: {
       datasets: []
@@ -27,12 +40,6 @@ export class CpuLoadMeter implements Meter {
       }
     }
   })
-
-  /**
-    * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
-    */
-  public attach(container: HTMLElement) {
-    attachGraph(container, this.canvas, "cpu", "loads", "Загрузка")
   }
 
   /**

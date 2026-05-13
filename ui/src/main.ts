@@ -1,6 +1,5 @@
 import Chart from "chart.js/auto";
 import { Meters } from "./meters";
-import { swapSection } from "./sectionChange";
 
 Chart.defaults.color = "#fbf1c7"
 Chart.defaults.borderColor = "#fbf1c7"

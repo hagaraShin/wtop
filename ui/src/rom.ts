@@ -5,32 +5,40 @@ import { Meter } from "./meters"
 export class DisksMeter implements Meter {
   canvas: HTMLCanvasElement = document.createElement("canvas")
 
-  chart: Chart<keyof ChartTypeRegistry, number[]> = new Chart(this.canvas, {
-    type: "bar",
-    data: {
-      labels: [],
-      datasets: [{ label: "Доступно (%)", data: [], backgroundColor: colors[0] }, { label: "Свободно (%)", data: [], backgroundColor: colors[1] }]
-    },
-    options: {
-      interaction: {
-        intersect: false,
-        axis: "y"
-      },
-      plugins: {
-        tooltip: {
-          mode: "index",
-          intersect: false,
-        },
-      },
-      maintainAspectRatio: false,
-      indexAxis: "y"
-    }
-  })
+  chart: Chart<keyof ChartTypeRegistry, number[]> = this.defaultChart()
   /**
     * Функция для внедрения графика в дерево элементов. График заменит все дочерние элементы контейнера.
     */
   public attach(container: HTMLElement) {
+    this.canvas.remove()
+    this.canvas = document.createElement('canvas');
+    this.chart = this.defaultChart()
     attachGraph(container, this.canvas, "rom", "disks", "Разделы")
+  }
+
+  defaultChart() {
+
+    return new Chart(this.canvas, {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [{ label: "Доступно (%)", data: [], backgroundColor: colors[0] }, { label: "Свободно (%)", data: [], backgroundColor: colors[1] }]
+      },
+      options: {
+        interaction: {
+          intersect: false,
+          axis: "y"
+        },
+        plugins: {
+          tooltip: {
+            mode: "index",
+            intersect: false,
+          },
+        },
+        maintainAspectRatio: false,
+        indexAxis: "y"
+      }
+    })
   }
 
 
